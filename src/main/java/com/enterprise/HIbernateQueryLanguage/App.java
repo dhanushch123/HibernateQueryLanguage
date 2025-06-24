@@ -68,6 +68,28 @@ public class App {
     	Query q5 = session.createQuery("select sum(marks) from Student");
     	long sum = (Long) q5.getSingleResult();
     	System.out.println(sum);
+    	
+    	long start1 = System.currentTimeMillis();
+    	Query q6 = session.createQuery("select avg(marks) from Student");
+    	double avg = (Double) q6.getSingleResult();
+    	Query q7 = session.createQuery("select name,rollNo,marks from Student where marks > :m");
+    	q7.setParameter("m", (int) avg);
+    	List<Object[]> list1 = q7.getResultList();
+    	for(Object[] s : list1) {
+    		System.out.println(s[0] + " " + s[1] + " " + s[2]);
+    	}
+    	long end1 = System.currentTimeMillis();
+    	System.out.println(end1 - start1);
+    	
+    	long start2 = System.currentTimeMillis();
+    	Query q8 = session.createQuery("select name,rollNo,marks from Student where marks > (select avg(marks) from Student)");
+    	List<Object[]> list2 = q7.getResultList();
+    	for(Object[] s : list2) {
+    		System.out.println(s[0] + " " + s[1] + " " + s[2]);
+    	}
+    	long end2 = System.currentTimeMillis();   
+    	System.out.println(end2 - start2);
+    	
     	tx.commit();
     	session.close();
     	
